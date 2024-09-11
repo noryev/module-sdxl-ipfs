@@ -56,11 +56,7 @@ def main():
         model_id = "stabilityai/sdxl-turbo"
         cache_dir = "/root/.cache/huggingface"
         
-        if os.path.exists(os.path.join(cache_dir, "diffusers", model_id)):
-            logging.info("Using cached model")
-        else:
-            logging.info("Downloading model (this may take a while)")
-        
+        logging.info("Using pre-downloaded model")
         pipe = DiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, variant="fp16", cache_dir=cache_dir)
         
         # Move the pipeline to GPU if available
