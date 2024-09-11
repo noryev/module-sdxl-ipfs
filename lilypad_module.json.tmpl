@@ -11,10 +11,11 @@
       },
       "Docker": {
         "EnvironmentVariables": [
-          {{ if .ipfs }}"{{ subst "IPFS=%s" .ipfs }}",{{else}}"IPFS=ipfs",{{ end }}
-          {{ if .prompt }}"{{ subst "PROMPT=%s" .prompt }}"{{else}}"PROMPT=A beautiful landscape with mountains and a lake"{{ end }}
+            {{ if .ipfs }}"IPFS={{ .ipfs }}",{{else}}"IPFS=ipfs",{{ end }}
+            {{ if .prompt }}"PROMPT={{ .prompt }}",{{else}}"PROMPT=A beautiful landscape with mountains and a lake",{{ end }}
         ],
-        "Image": "noryev/sdxl-lightweight-ipfs:latest"
+        "Image": "noryev/sdxl-lightweight-ipfs:latest",
+          "Entrypoint": ["python", "/sdxl/run_sdxl.py"]
       },
       "Engine": "Docker",
       "Network": {

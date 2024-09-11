@@ -2,7 +2,7 @@
 FROM python:3.9-slim-buster
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /sdxl
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -32,16 +32,16 @@ RUN mkdir -p /root/.cache/huggingface
 RUN python -c "from diffusers import DiffusionPipeline; import torch; DiffusionPipeline.from_pretrained('stabilityai/sdxl-turbo', torch_dtype=torch.float16, variant='fp16', cache_dir='/root/.cache/huggingface')"
 
 # Copy the Python script into the container
-COPY run_sdxl.py .
+COPY run_sdxl.py /sdxl/run_sdxl.py
 
 # Set permissions
-RUN chmod +x /app/run_sdxl.py
+RUN chmod +x /sdxl/run_sdxl.py
 
 # Expose IPFS ports
 EXPOSE 4001 5001 8080
 
 # Create a startup script in /usr/local/bin
-RUN echo '#!/bin/bash\nipfs init\nipfs daemon --writable &\npython /app/run_sdxl.py "$@"' > /usr/local/bin/start.sh && \
+RUN echo '#!/bin/bash\nipfs init\nipfs daemon --writable &\npython /sdxl/run_sdxl.py "$@"' > /usr/local/bin/start.sh && \
     chmod +x /usr/local/bin/start.sh
 
 # Set the entrypoint to the startup script
