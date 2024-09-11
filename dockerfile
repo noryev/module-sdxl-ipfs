@@ -31,17 +31,31 @@ RUN mkdir -p /root/.cache/huggingface /app
 # Download the SDXL-Turbo model
 RUN python -c "from diffusers import DiffusionPipeline; import torch; DiffusionPipeline.from_pretrained('stabilityai/sdxl-turbo', torch_dtype=torch.float16, variant='fp16', cache_dir='/root/.cache/huggingface')"
 
-# Copy the Python script into the container
+# Copy the Python script into multiple locations in the container
 COPY run_sdxl.py /sdxl/run_sdxl.py
+COPY run_sdxl.py /app/run_sdxl.py
+COPY run_sdxl.py /root/run_sdxl.py
 
 # Set permissions
-RUN chmod +x /sdxl/run_sdxl.py
+RUN chmod +x /sdxl/run_sdxl.py /app/run_sdxl.py /root/run_sdxl.py
 
 # Expose IPFS ports
 EXPOSE 4001 5001 8080
 
 # Create a startup script
-RUN echo '#!/bin/bash\nipfs init\nipfs daemon --writable &\npython /sdxl/run_sdxl.py "$@"\ncp /sdxl/output.png /app/output.png' > /usr/local/bin/start.sh && \
+RUN echo '#!/bin/bash\n\
+    ipfs init\n\
+    ipfs daemon --writable &\n\
+    if [ -f /sdxl/run_sdxl.py ]; then\n\
+    python /sdxl/run_sdxl.py "$@"\n\
+    elif [ -f /app/run_sdxl.py ]; then\n\
+    python /app/run_sdxl.py "$@"\n\
+    else\n\
+    python /root/run_sdxl.py "$@"\n\
+    fi\n\
+    if [ -f /sdxl/output.png ]; then\n\
+    cp /sdxl/output.png /app/output.png\n\
+    fi' > /usr/local/bin/start.sh && \
     chmod +x /usr/local/bin/start.sh
 
 # Set the entrypoint to the startup script
