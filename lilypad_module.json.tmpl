@@ -11,11 +11,11 @@
       },
       "Docker": {
         "EnvironmentVariables": [
-            {{ if .ipfs }}"IPFS={{ .ipfs }}",{{else}}"IPFS=ipfs",{{ end }}
-            {{ if .prompt }}"PROMPT={{ .prompt }}",{{else}}"PROMPT=A beautiful landscape with mountains and a lake",{{ end }}
+          {{ if .ipfs }}"IPFS={{ .ipfs }}"{{else}}"IPFS=ipfs"{{ end }},
+          {{ if .prompt }}"PROMPT={{ .prompt }}"{{else}}"PROMPT=A beautiful landscape with mountains and a lake"{{ end }}
         ],
         "Image": "noryev/sdxl-lightweight-ipfs:latest",
-          "Entrypoint": ["python", "/sdxl/run_sdxl.py"]
+        "Entrypoint": ["python", "/sdxl/run_sdxl.py"]
       },
       "Engine": "Docker",
       "Network": {
@@ -29,11 +29,11 @@
       },
       "Timeout": 1800,
       "Verifier": "Noop",
-      "outputs": [
+      "Outputs": [
         {
           "Name": "outputs",
           "StorageSource": "IPFS",
-          "path": "/app"
+          "Path": "/app"
         }
       ]
     }
