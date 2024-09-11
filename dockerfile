@@ -25,8 +25,8 @@ RUN pip install torch torchvision torchaudio --extra-index-url https://download.
 # Install other dependencies
 RUN pip install diffusers transformers accelerate requests
 
-# Create a directory for the model cache
-RUN mkdir -p /root/.cache/huggingface
+# Create directories for the model cache and output
+RUN mkdir -p /root/.cache/huggingface /app
 
 # Download the SDXL-Turbo model
 RUN python -c "from diffusers import DiffusionPipeline; import torch; DiffusionPipeline.from_pretrained('stabilityai/sdxl-turbo', torch_dtype=torch.float16, variant='fp16', cache_dir='/root/.cache/huggingface')"
@@ -40,8 +40,8 @@ RUN chmod +x /sdxl/run_sdxl.py
 # Expose IPFS ports
 EXPOSE 4001 5001 8080
 
-# Create a startup script in /usr/local/bin
-RUN echo '#!/bin/bash\nipfs init\nipfs daemon --writable &\npython /sdxl/run_sdxl.py "$@"' > /usr/local/bin/start.sh && \
+# Create a startup script
+RUN echo '#!/bin/bash\nipfs init\nipfs daemon --writable &\npython /sdxl/run_sdxl.py "$@"\ncp /sdxl/output.png /app/output.png' > /usr/local/bin/start.sh && \
     chmod +x /usr/local/bin/start.sh
 
 # Set the entrypoint to the startup script
