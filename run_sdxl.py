@@ -1,6 +1,7 @@
 import torch
 from diffusers import DiffusionPipeline
 import logging
+import os
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -15,8 +16,16 @@ def main():
             logging.info(f"CUDA device: {torch.cuda.get_device_name(0)}")
 
         # Load the SDXL-Turbo pipeline
-        logging.info("Loading SDXL-Turbo pipeline")
-        pipe = DiffusionPipeline.from_pretrained("stabilityai/sdxl-turbo", torch_dtype=torch.float16, variant="fp16")
+        model_id = "stabilityai/sdxl-turbo"
+        cache_dir = "/root/.cache/huggingface"
+        
+        logging.info(f"Checking for cached model in {cache_dir}")
+        if os.path.exists(os.path.join(cache_dir, "diffusers", model_id)):
+            logging.info("Using cached model")
+        else:
+            logging.info("Downloading model (this may take a while)")
+        
+        pipe = DiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, variant="fp16", cache_dir=cache_dir)
         
         # Move the pipeline to GPU if available
         device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -28,8 +37,8 @@ def main():
         logging.info(f"Generating image with prompt: {prompt}")
         image = pipe(prompt=prompt, num_inference_steps=1, guidance_scale=0.0).images[0]
 
-        # Save the image
-        output_path = "/app/output.png"
+        # Save the image in the current working directory
+        output_path = os.path.join(os.getcwd(), "output.png")
         image.save(output_path)
         logging.info(f"Image generated and saved as {output_path}")
 

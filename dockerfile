@@ -16,11 +16,14 @@ RUN pip install torch torchvision torchaudio --extra-index-url https://download.
 # Install other dependencies
 RUN pip install diffusers transformers accelerate
 
+# Create a directory for the model cache
+RUN mkdir -p /root/.cache/huggingface
+
 # Copy the Python script into the container
-COPY inference.py .
+COPY run_sdxl.py .
 
 # Set permissions
-RUN chmod +x /app/inference.py
+RUN chmod +x /app/run_sdxl.py
 
 # Run the script when the container launches
-CMD ["python", "/app/inference.py"]
+CMD ["python", "/app/run_sdxl.py"]
