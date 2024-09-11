@@ -1,0 +1,41 @@
+{
+  "machine": {
+    "gpu": 1,
+    "cpu": 1000,
+    "ram": 8000
+  },
+  "job": {
+    "APIVersion": "V1beta1",
+    "Spec": {
+      "Deal": {
+        "Concurrency": 1
+      },
+      "Docker": {
+        "EnvironmentVariables": [
+          {{ if .ipfs }}"{{ subst "IPFS=%s" .ipfs }}",{{else}}"IPFS=ipfs",{{ end }}
+          {{ if .prompt }}"{{ subst "PROMPT=%s" .prompt }}"{{else}}"PROMPT=A beautiful landscape with mountains and a lake"{{ end }}
+        ],
+        "Image": "noryev/sdxl-lightweight-ipfs:latest"
+      },
+      "Engine": "Docker",
+      "Network": {
+        "Type": "None"
+      },
+      "PublisherSpec": {
+        "Type": "IPFS"
+      },
+      "Resources": {
+        "GPU": "1"
+      },
+      "Timeout": 1800,
+      "Verifier": "Noop",
+      "outputs": [
+        {
+          "Name": "outputs",
+          "StorageSource": "IPFS",
+          "path": "/app"
+        }
+      ]
+    }
+  }
+}
