@@ -39,11 +39,12 @@ RUN chmod +x /app/run_sdxl.py
 EXPOSE 4001 5001 8080
 
 # Create a startup script
-RUN echo '#!/bin/bash\nipfs init\nipfs daemon --writable &\npython /app/run_sdxl.py "$@"' > /app/start.sh && \
-    chmod +x /app/start.sh
+# Create a startup script in /usr/local/bin instead of /app
+RUN echo '#!/bin/bash\nipfs init\nipfs daemon --writable &\npython /app/run_sdxl.py "$@"' > /usr/local/bin/start.sh && \
+    chmod +x /usr/local/bin/start.sh
 
 # Set the entrypoint to the startup script
-ENTRYPOINT ["/app/start.sh"]
+ENTRYPOINT ["/usr/local/bin/start.sh"]
 
 # Default command (can be overridden)
 CMD ["A beautiful landscape with mountains and a lake"]
