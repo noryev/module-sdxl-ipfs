@@ -8,13 +8,23 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
+    wget \
     && rm -rf /var/lib/apt/lists/*
+
+# Install IPFS
+RUN wget https://dist.ipfs.tech/kubo/v0.18.1/kubo_v0.18.1_linux-amd64.tar.gz && \
+    tar -xvzf kubo_v0.18.1_linux-amd64.tar.gz && \
+    cd kubo && \
+    ./install.sh && \
+    cd .. && \
+    rm -rf kubo kubo_v0.18.1_linux-amd64.tar.gz
 
 # Install PyTorch with CUDA support
 RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu118
 
 # Install other dependencies
-RUN pip install diffusers transformers accelerate
+RUN pip install diffusers transformers accelerate requests
+
 
 # Create a directory for the model cache
 RUN mkdir -p /root/.cache/huggingface
@@ -25,5 +35,15 @@ COPY run_sdxl.py .
 # Set permissions
 RUN chmod +x /app/run_sdxl.py
 
-# Run the script when the container launches
-CMD ["python", "/app/run_sdxl.py"]
+# Expose IPFS ports
+EXPOSE 4001 5001 8080
+
+# Create a startup script
+RUN echo '#!/bin/bash\nipfs init\nipfs daemon --writable &\npython /app/run_sdxl.py "$@"' > /app/start.sh && \
+    chmod +x /app/start.sh
+
+# Set the entrypoint to the startup script
+ENTRYPOINT ["/app/start.sh"]
+
+# Default command (can be overridden)
+CMD ["A beautiful landscape with mountains and a lake"]
