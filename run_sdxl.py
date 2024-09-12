@@ -7,18 +7,39 @@ import json
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+def get_prompt():
+    if 'LILYPAD_INPUT_FILE' in os.environ:
+        try:
+            with open(os.environ['LILYPAD_INPUT_FILE'], 'r') as f:
+                input_data = json.load(f)
+            return input_data.get('PROMPT')
+        except Exception as e:
+            logging.error(f"Error reading LILYPAD_INPUT_FILE: {str(e)}")
+    
+    return os.environ.get('PROMPT', "A spaceship parked on a lilypad")
+
 def main():
-    try:
-        logging.info("Starting SDXL lightweight script")
+    prompt = get_prompt()
+    logging.info(f"Using prompt: {prompt}")
+
+        # Log all environment variables
+        logging.info("Environment variables:")
+        for key, value in os.environ.items():
+            logging.info(f"{key}: {value}")
 
         # Determine the prompt
         if 'LILYPAD_INPUT_FILE' in os.environ:
-            # We're running in Lilypad
-            with open(os.environ['LILYPAD_INPUT_FILE'], 'r') as f:
-                input_data = json.load(f)
-            prompt = input_data.get('PROMPT', os.environ.get('DEFAULT_PROMPT', "A beautiful landscape with mountains and a lake"))
+            logging.info(f"LILYPAD_INPUT_FILE found: {os.environ['LILYPAD_INPUT_FILE']}")
+            try:
+                with open(os.environ['LILYPAD_INPUT_FILE'], 'r') as f:
+                    input_data = json.load(f)
+                    logging.info(f"Contents of LILYPAD_INPUT_FILE: {input_data}")
+                prompt = input_data.get('PROMPT', os.environ.get('DEFAULT_PROMPT', "A beautiful landscape with mountains and a lake"))
+            except Exception as e:
+                logging.error(f"Error reading LILYPAD_INPUT_FILE: {str(e)}")
+                prompt = os.environ.get('DEFAULT_PROMPT', "A beautiful landscape with mountains and a lake")
         else:
-            # We're running directly in Docker
+            logging.info("LILYPAD_INPUT_FILE not found, using environment variable")
             prompt = os.environ.get('PROMPT', os.environ.get('DEFAULT_PROMPT', "A beautiful landscape with mountains and a lake"))
 
         logging.info(f"Using prompt: {prompt}")

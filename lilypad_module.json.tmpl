@@ -13,7 +13,7 @@
       "Docker": {
         "Entrypoint": ["python", "/workspace/run_sdxl.py"],
         "EnvironmentVariables": [
-          {{ if .prompt }}"PROMPT={{ .prompt }}"{{else}}"PROMPT=A spaceship parked on a lilypad"{{ end }}
+          "LILYPAD_INPUT_FILE=/tmp/lilypad_input.json"
         ],
         "Image": "noryev/sdxl-lightweight-ipfs:latest"
       },
@@ -29,6 +29,14 @@
       },
       "Timeout": 1800,
       "Verifier": "Noop",
+      "Inputs": [
+        {
+          "Name": "lilypad_input",
+          "StorageSource": "Inline",
+          "Path": "/tmp/lilypad_input.json",
+          "Content": {{ if .prompt }}{{ toJson (dict "PROMPT" .prompt) }}{{ else }}{{ toJson (dict "PROMPT" "A spaceship parked on a lilypad") }}{{ end }}
+        }
+      ],
       "Outputs": [
         {
           "Name": "outputs",
