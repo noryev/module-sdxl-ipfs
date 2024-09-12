@@ -52,6 +52,3 @@ RUN echo '#!/bin/bash\n\
 
 # Set the entrypoint to the startup script
 ENTRYPOINT ["/usr/local/bin/start.sh"]
-
-# Default command (can be overridden)
-CMD ["A beautiful landscape with mountains and a lake"]

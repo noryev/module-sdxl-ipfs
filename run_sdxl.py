@@ -29,8 +29,9 @@ def main():
             logging.error("IPFS failed to start")
             sys.exit(1)
 
-        # Get the prompt from command line argument or use a default
-        prompt = sys.argv[1] if len(sys.argv) > 1 else "A beautiful landscape with mountains and a lake"
+        # Get the prompt from environment variable, command line argument, or use a default
+        prompt = os.environ.get('PROMPT') or (sys.argv[1] if len(sys.argv) > 1 else "A beautiful landscape with mountains and a lake")
+        logging.info(f"Using prompt: {prompt}")
 
         # Add the prompt to IPFS
         files = {'file': prompt}

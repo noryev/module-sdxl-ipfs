@@ -13,11 +13,11 @@
       "Docker": {
         "EnvironmentVariables": [
           "IPFS=ipfs",
-          "PROMPT={{ .prompt }}"
+          {{ if .prompt }}"{{ subst "PROMPT=%s" .prompt }}"{{else}}"PROMPT=A spaceship parked on a lilypad"{{ end }}
         ],
         "Image": "noryev/sdxl-lightweight-ipfs:latest",
         "Entrypoint": ["/usr/local/bin/start.sh"]
-        },
+      },
       "Engine": "Docker",
       "Network": {
         "Type": "None"
