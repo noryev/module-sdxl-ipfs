@@ -34,7 +34,7 @@
           "Name": "lilypad_input",
           "StorageSource": "Inline",
           "Path": "/tmp/lilypad_input.json",
-          "Content": {{ if .prompt }}{{ toJson (dict "PROMPT" .prompt) }}{{ else }}{{ toJson (dict "PROMPT" "A spaceship parked on a lilypad") }}{{ end }}
+          "Content": "{{ if .prompt }}{ \"PROMPT\": \"{{ .prompt }}\" }{{ else }}{ \"PROMPT\": \"A spaceship parked on a lilypad\" }{{ end }}"
         }
       ],
       "Outputs": [
