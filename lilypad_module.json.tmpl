@@ -2,7 +2,7 @@
   "machine": {
     "gpu": 1,
     "cpu": 1000,
-    "ram": 1000
+    "ram": 100
   },
   "job": {
     "APIVersion": "V1beta1",
@@ -16,7 +16,7 @@
           {{ if .prompt }}"PROMPT={{ .prompt }}"{{else}}"PROMPT=A beautiful landscape with mountains and a lake"{{ end }}
         ],
         "Image": "noryev/sdxl-lightweight-ipfs:latest",
-        "Entrypoint": ["python", "/sdxl/run_sdxl.py"]
+        "Entrypoint": ["/usr/local/bin/start.sh"]
       },
       "Engine": "Docker",
       "Network": {
@@ -34,7 +34,7 @@
         {
           "Name": "outputs",
           "StorageSource": "IPFS",
-          "Path": "/app"
+          "Path": "/outputs"
         }
       ]
     }

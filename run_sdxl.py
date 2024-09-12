@@ -68,10 +68,21 @@ def main():
         logging.info(f"Generating image with prompt: {retrieved_prompt}")
         image = pipe(prompt=retrieved_prompt, num_inference_steps=1, guidance_scale=0.0).images[0]
 
-        # Save the image in the current working directory
-        output_path = os.path.join(os.getcwd(), "output.png")
-        image.save(output_path)
-        logging.info(f"Image generated and saved as {output_path}")
+        # Save the image in the appropriate directory
+        output_dirs = ["/outputs", "/app", "/workspace", "."]
+        for output_dir in output_dirs:
+            try:
+                logging.info(f"Attempting to save to {output_dir}")
+                os.makedirs(output_dir, exist_ok=True)
+                output_path = os.path.join(output_dir, "output.png")
+                image.save(output_path)
+                logging.info(f"Image generated and saved as {output_path}")
+                break
+            except Exception as e:
+                logging.error(f"Failed to save to {output_dir}: {str(e)}")
+        else:
+            logging.error("No valid output directory found")
+            sys.exit(1)
 
         # Add the generated image to IPFS
         with open(output_path, "rb") as image_file:
