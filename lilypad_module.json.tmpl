@@ -11,12 +11,16 @@
         "Concurrency": 1
       },
       "Docker": {
+        "Entrypoint": [
+          "/bin/sh",
+          "-c",
+          "/usr/local/bin/start.sh"
+        ],
         "EnvironmentVariables": [
           "IPFS=ipfs",
           {{ if .prompt }}"{{ subst "PROMPT=%s" .prompt }}"{{else}}"PROMPT=A spaceship parked on a lilypad"{{ end }}
         ],
-        "Image": "noryev/sdxl-lightweight-ipfs:latest",
-        "Entrypoint": ["/usr/local/bin/start.sh"]
+        "Image": "noryev/sdxl-lightweight-ipfs:latest"
       },
       "Engine": "Docker",
       "Network": {
