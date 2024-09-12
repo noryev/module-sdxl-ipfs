@@ -12,8 +12,8 @@
       },
       "Docker": {
         "EnvironmentVariables": [
-            "IPFS=ipfs",
-            {{ if .prompt }}"PROMPT={{ .prompt }}"{{else}}"PROMPT=A beautiful landscape with mountains and a lake"{{ end }}
+          "IPFS=ipfs",
+          "PROMPT={{ .prompt }}"
         ],
         "Image": "noryev/sdxl-lightweight-ipfs:latest",
         "Entrypoint": ["/usr/local/bin/start.sh"]
