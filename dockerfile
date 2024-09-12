@@ -26,7 +26,10 @@ RUN pip install torch torchvision torchaudio --extra-index-url https://download.
 RUN pip install diffusers transformers accelerate requests
 
 # Create directories for the model cache and output
-RUN mkdir -p /root/.cache/huggingface /outputs /app
+RUN mkdir -p /root/.cache/huggingface /app
+
+# Create output directory
+RUN mkdir -p /outputs && chmod 777 /outputs
 
 # Download the SDXL-Turbo model
 RUN python -c "from diffusers import DiffusionPipeline; import torch; DiffusionPipeline.from_pretrained('stabilityai/sdxl-turbo', torch_dtype=torch.float16, variant='fp16', cache_dir='/root/.cache/huggingface')"
