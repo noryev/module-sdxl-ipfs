@@ -13,7 +13,7 @@
       "Docker": {
         "Entrypoint": ["python", "/workspace/run_sdxl.py"],
         "EnvironmentVariables": [
-          {{ if .prompt }}"PROMPT={{ .prompt }}"{{ else }}"PROMPT=A spaceship parked on a lilypad"{{ end }}
+          {{ if .prompt }}"PROMPT={{ .prompt | js }}"{{ else }}"PROMPT=A spaceship parked on a lilypad"{{ end }}
         ],
         "Image": "noryev/sdxl-lightweight-ipfs:latest"
       },

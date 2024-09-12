@@ -26,5 +26,8 @@ RUN chmod +x /workspace/run_sdxl.py
 # Set default environment variables
 ENV DEFAULT_PROMPT="A spaceship parked on a lilypad"
 
-# Set the entrypoint to directly run the Python script
+# Set the entrypoint to run the Python script and allow for command-line arguments
 ENTRYPOINT ["python", "/workspace/run_sdxl.py"]
+
+# Set a default command that can be overridden
+CMD ["${DEFAULT_PROMPT}"]
