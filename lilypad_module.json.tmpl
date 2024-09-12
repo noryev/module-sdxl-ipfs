@@ -12,12 +12,12 @@
       },
       "Docker": {
         "EnvironmentVariables": [
-          {{ if .ipfs }}"IPFS={{ .ipfs }}"{{else}}"IPFS=ipfs"{{ end }},
-          {{ if .prompt }}"PROMPT={{ .prompt }}"{{else}}"PROMPT=A beautiful landscape with mountains and a lake"{{ end }}
+            "IPFS=ipfs",
+            {{ if .prompt }}"PROMPT={{ .prompt }}"{{else}}"PROMPT=A beautiful landscape with mountains and a lake"{{ end }}
         ],
         "Image": "noryev/sdxl-lightweight-ipfs:latest",
         "Entrypoint": ["/usr/local/bin/start.sh"]
-      },
+        },
       "Engine": "Docker",
       "Network": {
         "Type": "None"
