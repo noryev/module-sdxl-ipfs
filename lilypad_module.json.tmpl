@@ -11,14 +11,9 @@
         "Concurrency": 1
       },
       "Docker": {
-        "Entrypoint": [
-          "/bin/sh",
-          "-c",
-          "/usr/local/bin/start.sh"
-        ],
+        "Entrypoint": ["python", "/workspace/run_sdxl.py"],
         "EnvironmentVariables": [
-          "IPFS=ipfs",
-          {{ if .prompt }}"{{ subst "PROMPT=%s" .prompt }}"{{else}}"PROMPT=A spaceship parked on a lilypad"{{ end }}
+          {{ if .prompt }}"PROMPT={{ .prompt }}"{{else}}"PROMPT=A spaceship parked on a lilypad"{{ end }}
         ],
         "Image": "noryev/sdxl-lightweight-ipfs:latest"
       },

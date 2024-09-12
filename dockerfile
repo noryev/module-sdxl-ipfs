@@ -8,47 +8,23 @@ WORKDIR /workspace
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
-    wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Install IPFS
-RUN wget https://dist.ipfs.tech/kubo/v0.18.1/kubo_v0.18.1_linux-amd64.tar.gz && \
-    tar -xvzf kubo_v0.18.1_linux-amd64.tar.gz && \
-    cd kubo && \
-    ./install.sh && \
-    cd .. && \
-    rm -rf kubo kubo_v0.18.1_linux-amd64.tar.gz
+# Install PyTorch and other dependencies
+RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu118 \
+    && pip install diffusers transformers accelerate
 
-# Install PyTorch with CUDA support
-RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu118
-
-# Install other dependencies
-RUN pip install diffusers transformers accelerate requests
-
-# Create directories for the model cache and output
-RUN mkdir -p /root/.cache/huggingface /app
-
-# Create output directory
-RUN mkdir -p /outputs && chmod 777 /outputs
-
-# Download the SDXL-Turbo model
-RUN python -c "from diffusers import DiffusionPipeline; import torch; DiffusionPipeline.from_pretrained('stabilityai/sdxl-turbo', torch_dtype=torch.float16, variant='fp16', cache_dir='/root/.cache/huggingface')"
+# Create directories and download the SDXL-Turbo model
+RUN mkdir -p /root/.cache/huggingface /outputs \
+    && chmod 777 /outputs \
+    && python -c "from diffusers import DiffusionPipeline; import torch; DiffusionPipeline.from_pretrained('stabilityai/sdxl-turbo', torch_dtype=torch.float16, variant='fp16', cache_dir='/root/.cache/huggingface')"
 
 # Copy the Python script into the container
 COPY run_sdxl.py /workspace/run_sdxl.py
-
-# Set permissions
 RUN chmod +x /workspace/run_sdxl.py
 
-# Expose IPFS ports
-EXPOSE 4001 5001 8080
+# Set default environment variables
+ENV DEFAULT_PROMPT="A spaceship parked on a lilypad"
 
-# Create a startup script
-RUN echo '#!/bin/bash\n\
-    ipfs init\n\
-    ipfs daemon --writable &\n\
-    python /workspace/run_sdxl.py "$@"' > /usr/local/bin/start.sh && \
-    chmod +x /usr/local/bin/start.sh
-
-# Set the entrypoint to the startup script
-ENTRYPOINT ["/usr/local/bin/start.sh"]
+# Set the entrypoint to directly run the Python script
+ENTRYPOINT ["python", "/workspace/run_sdxl.py"]
