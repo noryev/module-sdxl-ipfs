@@ -1,4 +1,4 @@
-# SDXL Turbo Pipeline: A Module for Lilypad
+# SDXL Turbo Pipeline: A Lightweight Module for Lilypad
 
 This README provides instructions for running the SDXL Turbo Pipeline module on the Lilypad network using Docker and Lilypad CLI.
 
