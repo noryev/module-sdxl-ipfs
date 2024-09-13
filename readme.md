@@ -1,3 +1,5 @@
+# SDXL Turbo Pipeline: a lightweight model to 
+
 Open a terminal and navigate to the directory containing these files.
 
 Build the Docker image:
