@@ -1,11 +1,11 @@
-# SDXL Turbo Pipeline: A Module for Lilypad Network
+# SDXL Turbo Pipeline: A Module for Lilypad
 
 This README provides instructions for running the SDXL Turbo Pipeline module on the Lilypad network using Docker and Lilypad CLI.
 
 ## Prerequisites
 
 - Docker installed on your system
-- GPU support (for optimal performance)
+- GPU
 - Lilypad CLI installed (for Lilypad network runs)
 
 ## Building and Running with Docker
