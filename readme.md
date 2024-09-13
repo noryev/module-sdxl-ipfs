@@ -1,4 +1,4 @@
-# SDXL Turbo Pipeline: a lightweight model to 
+# SDXL Turbo Pipeline: a lightweight model to generate prompt based photos
 
 Open a terminal and navigate to the directory containing these files.
 
